@@ -9,4 +9,4 @@ lib tests:
 	$(MAKE) -C $@ all
 
 clean purge:
-	@for dir in $(SUBMAKES); do $(MAKE) -C $$dir; done
+	@for dir in $(SUBMAKES); do $(MAKE) -C $$dir $@; done

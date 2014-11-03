@@ -8,3 +8,5 @@ all: $(TESTS)
 %.tst: %.cpp ../lib/$(LIBNAME)
 	$(CXX) $(CXXFLAGS) -o $@ $< -I../include ../lib/$(LIBNAME)
 
+clean purge:
+	$(RM) $(TESTS)
