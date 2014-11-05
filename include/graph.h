@@ -8,7 +8,7 @@ enum graph_status { gr_ok = 0, gr_not_init = 1 };
 
 template <typename NodeType, typename ArcType>
 class Graph {
-  private:
+  public:
     class ArcPointer {
       public:
         ArcPointer (ArcType _info = 0, ArcPointer *n = 0, size_t sn = 0,
@@ -50,6 +50,31 @@ class Graph {
       status = gr_not_init;
     }
 
+    void addArc (size_t from, size_t to, ArcType info) {
+      ArcPointer *arc = new ArcPointer(info, 0, from, to);
+      ArcPointer *p = arcs[from], *q = arcs[from];
+      while (p->end_node < to) {
+        q = p;
+        p = p->next;
+      }
+      if (p == arcs[from])
+        arcs[from] = arc;
+      else
+        q->next = arc;
+      arc->next = p;
+      num_arcs++;
+    }
+    NodeType getNodeInfo (size_t i) { return nodes[i]; }
+    ArcPointer *getArcPointer (size_t i, size_t j) {
+      ArcPointer *p = arcs[i];
+      while (p->end_node < j)
+        p = p->next;
+      if (p->end_node == j)
+        return p;
+      else
+        return 0;
+    }
+
     void readGraph (const char *);
     void prettyPrint () const;
   private:
@@ -69,20 +94,6 @@ class Graph {
         ArcType info = ArcType();
         arcs[i] = new ArcPointer(info, 0, i, nn);
       }
-    }
-    void addArc (ArcType info, size_t from, size_t to) {
-      ArcPointer *arc = new ArcPointer(info, 0, from, to);
-      ArcPointer *p = arcs[from], *q = arcs[from];
-      while (p->end_node < to) {
-        q = p;
-        p = p->next;
-      }
-      if (p == arcs[from])
-        arcs[from] = arc;
-      else
-        q->next = arc;
-      arc->next = p;
-      num_arcs++;
     }
 };
 
@@ -106,7 +117,7 @@ void Graph<NodeType, ArcType>::readGraph (const char *filename) {
   ArcType info;
   for (size_t k = 0; k < na; k++) {
     file >> from >> to >> info;
-    this->addArc(info, from, to);
+    this->addArc(from, to, info);
   }
 }
 
